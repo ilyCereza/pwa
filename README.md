@@ -1,3 +1,3 @@
-# Chat de Héroes
+# Reproductor de Playlist de Youtube
 
-Un cascarón de chat usando jQuery para PWAs
+Un pequeño reproductor que reproduce una playlist asignada de youtube
