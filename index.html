@@ -1,0 +1,690 @@
+<html lang="es" data-theme="dark">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" type="image/svg+xml" href="idle1.jpg" />
+    <meta name="viewport" content="width=device-width" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="theme-color" content="#3498db">
+
+
+    <style>
+        .bitter {
+            font-family: "Bitter", serif;
+            font-optical-sizing: auto;
+            font-weight: weight;
+            font-style: normal;
+        }
+        
+        .sour-gummy {
+            font-family: "Sour Gummy", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: weight;
+            font-style: normal;
+            font-variation-settings: "wdth" 100;
+        }
+        
+        body {
+            min-height: 100vh;
+            min-width: 100vw;
+            font-family: Sour Gummy;
+        }
+        
+        section {
+            background-image: url('/cinna/bg_1.png');
+            overflow: hidden;
+            background-size: cover;
+            background-position: top;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            min-width: 100vw;
+            /* mask-image: url('/cinna.svg'); */
+            mask-position: center;
+            mask-repeat: no-repeat;
+            mask-size: 0px;
+            animation: cinnamorrollOpen 3s 4s ease-in forwards;
+            animation-play-state: running;
+        }
+        
+        @keyframes cinnamorrollOpen {
+            0% {
+                mask-size: 0px;
+            }
+            20% {
+                mask-size: 50vh;
+            }
+            40% {
+                mask-size: 30vh;
+            }
+            100% {
+                mask-size: 1000vh;
+            }
+        }
+        
+        #cinna {
+            background-image: url('/cinna/cinna3.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: auto 100%;
+            animation: cinnaTalk;
+            animation-duration: 1s;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+            animation-fill-mode: alternate;
+            animation-play-state: paused;
+        }
+        
+        #contenedor {
+            background-image: url('/cinna/meltedTransition.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+        
+        @keyframes cinnaTalk {
+            0% {
+                transform: skew(0deg);
+            }
+            25% {
+                transform: skew(-3deg) scaleY(1.3);
+            }
+            50% {
+                transform: skew(0deg) scaleY(1);
+            }
+            75% {
+                transform: skew(3deg) scaleY(1.3);
+            }
+            100% {
+                transform: skew(0deg) scaleY(1);
+            }
+        }
+        
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 12px;
+            background: #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+        /* Barra */
+        
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 12px;
+            background: rgb(73, 161, 233);
+            border-radius: 5px;
+        }
+        /* Botón */
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 32px;
+            width: 32px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid rgb(132, 193, 243);
+            cursor: pointer;
+            margin-top: -12px;
+            /* centra el thumb */
+        }
+        
+        #playlist::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        #playlist::-webkit-scrollbar-track {
+            background: rgb(132, 193, 243);
+        }
+        
+        #playlist::-webkit-scrollbar-thumb {
+            background: white;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+
+<body>
+
+
+    <main>
+
+        <section class="w-screen lg:h-full flex  justify-center ">
+
+            <!-- <div class="w-full h-1/4 md:w-1/2 md:h-1/2 absolute top-1/2 left-1/2 -translate-1/2 opacity-50 backdrop-blur-3xl rounded-4xl
+				border-dashed border-10 border-amber-400 " id="contenedor">
+				</div> -->
+
+            <!-- <div id="cinna" class="w-full h-1/4 md:w-1/2 md:h-1/2 relative">.</div> -->
+
+            <div id="player"></div>
+
+            <div class="h-screen w-fit flex flex-wrap justify-center lg:bg-transparent bg-blue-300/60 backdrop-blur-sm items-center relative flex-col-reverse lg:flex-row-reverse gap-5 lg:gap-0">
+
+                <div class="lg:drawer-open h-full flex items-center absolute bottom-0 left-0 lg:static">
+
+                    <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
+                    <div class="drawer-content flex flex-col items-center justify-center !absolute bottom-0 right-0">
+                        <label for="my-drawer-3" class="btn drawer-button lg:hidden !absolute top-0 left-0">
+							Open drawer
+							</label>
+                    </div>
+
+                    <div class="py-8 drawer-side w-screen h-screen lg:!z-0 lg:!static bg-blue-300/50 backdrop-blur-3xl lg:bg-blue-300 lg:h-[50vh] lg:w-auto overflow-y-auto overflow-x-visible lg:rounded-2xl lg:py-9">
+                        <label for="my-drawer-3" aria-label="close sidebar" class="sticky -mt-8 left-full overflow-scroll">X</label>
+                        <div class="bg-none w-full lg:w-auto mt-0 lg:mt-0" id="playlist">
+                        </div>
+                    </div>
+
+                    <!-- <img src="/cinna/UI/bar2.png" alt="" class="absolute rotate-90 -right-[10px] top-1/2 w-[50vh] translate-x-1/2 -translate-y-1/2"> -->
+
+                </div>
+
+                <div class="flex h-full lg:h-auto lg:flex-nowrap flex-wrap lg:bg-blue-300 p-10 lg:rounded-2xl lg:relative items-center justify-center lg:justify-normal">
+                    <div class="lg:w-16 h-fit flex-none flex-grow-0 relative ml-8">
+                        <div class="rotate-270 absolute left-0 top-0 -translate-x-1/4 flex">
+                            <img src="/cinna/UI/playerButtons/volumeIcon.png" alt="" class="size-16 -translate-y-4/12 rotate-90" id="volIcon">
+                            <input type="range" id="vol" min="0" max="100" value="50" class="w-[120px] hidden lg:block">
+                        </div>
+                    </div>
+
+                    <div class="bg-cover bg-center bg-no-repeat h-[200px] w-[200px] rounded-lg" id="currentVideo"></div>
+
+                    <div class="grid grid-rows-4 items-center">
+                        <div class="grid grid-rows-2 row-span-3">
+                            <div class="flex flex-wrap px-5 items-center align-middle">
+                                <h1 class="p-0 m-0 text-center w-full text-3xl text-ellipsis" id="title"></h1>
+                                <h2 class="p-0 m-0 text-center w-full text-xl text-ellipsis" id="author">.</h1>
+                            </div>
+
+                            <div class="grid grid-cols-3 !items-center">
+                                <img src="/cinna/UI/playerButtons/play.png" alt="" id="btnPlay" class="size-24">
+                                <img src="/cinna/UI/playerButtons/back.png" alt="" id="btnPrev" class="size-24">
+                                <img src="/cinna/UI/playerButtons/next.png" alt="" id="btnNext" class="size-24">
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="w-full grid grid-cols-5 justify-items-center">
+                            <span id="current-time">0:00</span>
+
+                            <input class="col-span-3" type="range" id="time-slider" min="0" max="0" value="0" step="1" />
+
+                            <span id="duration">0:00</span>
+                        </div>
+
+                        <div class="lg:hidden w-full flex justify-center px-2">
+                            <img src="/cinna/UI/playerButtons/volumeIcon.png" alt="" class="size-12 -translate-y-4/12" id="volIcon2">
+                            <input type="range" id="vol2" min="0" max="100" value="50" class="min-w-[120px] w-full">
+                        </div>
+
+                    </div>
+
+                    <img src="/cinna/UI/bar1.png" alt="" class="absolute rotate-90 left-0 top-1/2 w-[355px] -translate-x-1/2 -translate-y-1/2 hidden lg:block">
+                    <img src="/cinna/UI/bar1.png" alt="" class="absolute rotate-270 right-0 top-1/2 w-[355px] translate-x-1/2 -translate-y-1/2 hidden lg:block">
+
+                </div>
+
+                <img src="/cinna/UI/bar3.png" alt="" class="absolute w-full rotate-180 top-1/4 left-1/2 -translate-x-1/2 -translate-y-5/12 scale-x-110 hidden lg:block">
+                <img src="/cinna/UI/bar3.png" alt="" class="absolute w-full bottom-1/4 left-1/2 -translate-x-1/2 translate-y-5/12 scale-x-110 hidden lg:block">
+
+
+
+            </div>
+
+            <a href="https://music.youtube.com/playlist?list=PLIa4bTQn_6T7S2jG-npUxD2RbOk1LA9yU&si=HzF9q_iYxAPe428O" class="hidden lg:block absolute left-1/2 bottom-1/12 -translate-x-1/2 bg-blue-400 border-white hover:bg-blue-500 px-5 py-2 text-3xl rounded-2xl border-4 border-dashed ">Playlist en Youtube</a>
+
+
+
+
+
+        </section>
+
+        <!-- <button onclick="iniciar()" class=" absolute top-1/2 left-1/2 rounded-2xl bg-blue-400 border-gray-50 border-dashed border-4 box-border text-2xl px-5 py-3 -translate-y-1/2 -translate-x-1/2" id="btnInicio">Subir volumen y hacer click por favor</button> -->
+
+    </main>
+
+    <button id="#btnNotificaciones" class="bg-blue-400 text-white px-4 py-2 rounded absolute left-8 top-8">Notificaciones</button>
+
+    <script>
+        const VAPID_PUBLIC_KEY = 'BGLtFaIu1SocApZ8DlSWmgpGhPxLBCQmfGMTBJEcBQ1VDcHOBdYMinNNn4eKSyodEcnBk8_GdPVIJLe63UyhAkw';
+
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+        }
+
+
+        // postBtn.on('click', function() {
+
+        //     var mensaje = txtMensaje.val();
+        //     if (mensaje.length === 0) {
+        //         cancelarBtn.click();
+        //         return;
+        //     }
+
+        //     crearMensajeHTML(mensaje, usuario);
+
+        //     fetch('http://localhost:3000/api/push', {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json'
+        //             },
+        //             body: JSON.stringify({ title: '@' + usuario, body: mensaje })
+        //         }).then(res => res.json())
+        //         .then(res => console.log('app.js', res))
+        //         .catch(err => console.log('Error:', err));
+
+        // });
+
+        const btnNotificaciones = document.getElementById('#btnNotificaciones');
+
+        btnNotificaciones.addEventListener('click', async function() {
+            console.log('Click en notificaciones');
+            var permiso = await Notification.requestPermission();
+            if (permiso != 'granted') return;
+
+            const register = await navigator.serviceWorker.ready;
+
+            var sub = await register.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+            });
+
+            console.log(JSON.stringify(sub));
+            const response = await fetch('http://localhost:3000/api/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(sub)
+            });
+
+            console.log(await response.json())
+        });
+
+
+        function enviarNotificacion(songName) {
+
+            var mensaje = songName;
+            if (mensaje.length === 0) {
+                cancelarBtn.click();
+                return;
+            }
+
+            fetch('http://localhost:3000/api/push', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: 'Reproduciendo ahora',
+                        body: mensaje
+                    })
+                }).then(res => res.json())
+                .then(res => console.log('app.js', res))
+                .catch(err => console.log('Error:', err));
+
+        }
+
+
+        // Registro del Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js')
+                    .catch(function(err) {
+                        console.log('Error al registrar el SW:', err);
+                    });
+            });
+        }
+
+        if (!('Notification' in window) || !('PushManager' in window)) {
+            console.log('Este navegador no soporta notificaciones push');
+        }
+    </script>
+
+    <script is:inline>
+        const tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+            window.onYouTubeIframeAPIReady = () => {
+
+                player = new YT.Player("player", {
+                    height: "0",
+                    width: "0",
+                    color: "white",
+                    controls: 0,
+                    modestbranding: 1,
+                    showinfo: 0,
+                    rel: 0,
+                    fs: 0,
+                    disablekb: 1,
+                    iv_load_policy: 3,
+                    playsinline: 1,
+                    volume: 0,
+                    playerVars: {
+                        listType: "playlist",
+                        list: "PLIa4bTQn_6T7S2jG-npUxD2RbOk1LA9yU"
+                    },
+                    events: {
+                        onReady: onPlayerReady,
+                        onStateChange: onPlayerStateChange
+                    }
+                });
+
+                playlist = document.getElementById("playlist");
+                let duration = 0;
+                let dragging = false;
+
+                async function onPlayerReady() {
+                    setBarProgress();
+                    setCurrentImage();
+                    setInterval(updateSlider, 300);
+
+                    playlist = player.getPlaylist();
+                    playlistLength = playlist.length;
+                    playlistContainer = document.getElementById("playlist");
+
+                    for (let i = 0; i < playlistLength; i++) {
+                        buttonContainer = document.createElement("button");
+                        divContainer = document.createElement("div");
+                        image = document.createElement("div");
+                        divText = document.createElement("div");
+                        videoTitle = document.createElement("h2");
+                        videoAuthor = document.createElement("h3");
+
+                        divContainer.className = "flex gap-5 items-center p-2";
+
+                        buttonContainer.className = " text-lg block hover:bg-blue-400 w-full lg:max-w-[330px] overflow-x-hidden text-left px-2 lg:px-0";
+                        buttonContainer.onclick = (() => {
+                            if (player.getPlaylistIndex() != i) {
+                                player.playVideoAt(i);
+                                playState = true;
+                                setBarProgress();
+                                btnPlay.src = playState ? "/cinna/UI/playerButtons/stop.png" : "/cinna/UI/playerButtons/play.png";
+                                enviarNotificacion(player.getVideoData().title);
+                            }
+                        });
+
+                        image.className = "h-[50px] w-[50px] bg-center bg-no-repeat bg-cover rounded-lg";
+                        image.style.backgroundImage = `url(https://img.youtube.com/vi/${playlist[i]}/maxresdefault.jpg)`;
+
+                        image.onclick = (() => {
+                            player.playVideoAt(i);
+                            playState = true;
+                            setBarProgress();
+                            btnPlay.src = playState ? "/cinna/UI/playerButtons/stop.png" : "/cinna/UI/playerButtons/play.png";
+                        });
+
+                        console.log(playlist[i]);
+                        videoData = await getVideoInfoFromIndex(i);
+
+                        videoTitle.innerHTML = videoData.title;
+                        videoAuthor.innerHTML = videoData.author;
+
+                        divContainer.appendChild(image);
+                        divText.appendChild(videoTitle);
+                        divText.appendChild(videoAuthor);
+                        divContainer.appendChild(divText);
+                        buttonContainer.appendChild(divContainer);
+                        playlistContainer.appendChild(buttonContainer);
+                    }
+                }
+
+                async function getVideoInfoFromIndex(index) {
+                    const apiKey = "AIzaSyDT9Fr3cyuXfcGG2omzBOPT3gONCPrvPhs"; // ← pon tu clave aquí
+
+                    // 1. obtener el ID del video desde la playlist cargada en tu player
+                    const playlist = player.getPlaylist();
+                    const videoId = playlist[index];
+
+                    if (!videoId) {
+                        throw new Error("No existe un video en ese índice");
+                    }
+
+                    // 2. pedir la información a YouTube Data API
+                    const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${apiKey}`;
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    if (!data.items || data.items.length === 0) {
+                        throw new Error("No se encontró información del video");
+                    }
+
+                    const info = data.items[0];
+
+                    // 3. construir el objeto que vas a recibir
+                    return {
+                        id: videoId,
+                        title: info.snippet.title,
+                        author: info.snippet.channelTitle,
+                        description: info.snippet.description,
+                        duration: info.contentDetails.duration, // formato ISO, ej: PT5M12S
+                        thumbnails: {
+                            default: info.snippet.thumbnails.default.url,
+                            medium: info.snippet.thumbnails.medium.url,
+                            high: info.snippet.thumbnails.high.url,
+                            max: info.snippet.thumbnails.maxres ? info.snippet.thumbnails.maxres.url : info.snippet.thumbnails.high.url,
+
+                            // miniatura cuadrada (YouTube no la da, la generamos)
+                            square: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+                        }
+                    };
+                }
+
+
+
+                function setBarProgress() {
+                    duration = player.getDuration();
+                    document.getElementById("time-slider").max = duration;
+                    document.getElementById("duration").textContent = formatTime(duration);
+                }
+
+                function updateSlider() {
+                    if (dragging) return;
+                    const current = player.getCurrentTime();
+
+                    document.getElementById("time-slider").value = current;
+                    document.getElementById("current-time").textContent = formatTime(current);
+                }
+
+                playlist = [];
+                playlistLength = 0;
+
+                const btnPlay = document.getElementById("btnPlay");
+                const btnPrev = document.getElementById("btnPrev");
+                const btnNext = document.getElementById("btnNext");
+                const volControl = document.getElementById("vol");
+                const volControl2 = document.getElementById("vol2");
+
+
+                const title = document.getElementById("title");
+                const author = document.getElementById("author");
+                const currentVideo = document.getElementById("currentVideo");
+
+                const slider = document.getElementById("time-slider");
+
+                slider.addEventListener("input", () => {
+                    dragging = true;
+                    document.getElementById("current-time").textContent =
+                        formatTime(slider.value);
+                    playState = false;
+                    btnPlay.src = playState ? "/cinna/UI/playerButtons/stop.png" : "/cinna/UI/playerButtons/play.png";
+                    player.pauseVideo();
+                });
+
+                // cuando suelta → saltar al segundo
+                slider.addEventListener("change", () => {
+                    dragging = false;
+                    player.seekTo(Number(slider.value), true);
+
+                    playState = true;
+                    btnPlay.src = playState ? "/cinna/UI/playerButtons/stop.png" : "/cinna/UI/playerButtons/play.png";
+                    player.playVideo();
+                });
+
+                function formatTime(s) {
+                    const m = Math.floor(s / 60);
+                    const sec = Math.floor(s % 60);
+                    return `${m}:${sec}`;
+                }
+
+                lastId = "null";
+
+                setInterval(() => {
+                    if (player && player.getVideoData) {
+
+                        if (lastId != player.getVideoData().video_id) {
+                            setBarProgress();
+                            const videoData = player.getVideoData();
+                            const videoId = videoData.video_id;
+                            currentVideo.style.backgroundImage = `url(https://img.youtube.com/vi/${videoId}/maxresdefault.jpg)`;
+                            title.textContent = videoData.title;
+                            author.textContent = videoData.author;
+                            lastId = videoId;
+                        }
+
+
+                    }
+                }, 1000);
+
+                function setCurrentImage() {
+                    if (player && player.getVideoData) {
+                        const videoData = player.getVideoData();
+                        const videoId = videoData.video_id;
+                        currentVideo.style.backgroundImage = `url(https://img.youtube.com/vi/${videoId}/maxresdefault.jpg)`;
+                        title.textContent = videoData.title;
+                        author.textContent = videoData.author;
+                    }
+                }
+
+                function onPlayerStateChange(event) {
+                    if (event.data === YT.PlayerState.ENDED) {
+                        console.log("Video ended");
+                        setBarProgress();
+                        setCurrentImage();
+                    }
+                }
+
+
+                playState = false;
+
+                btnPlay.onclick = () => {
+                    playState = !playState;
+                    btnPlay.src = playState ? "/cinna/UI/playerButtons/stop.png" : "/cinna/UI/playerButtons/play.png";
+                    if (playState) {
+                        player.playVideo();
+                    } else {
+                        player.pauseVideo();
+                    }
+                };
+
+                btnPrev.onclick = () => {
+                    if (player.getPlaylistIndex() == 0) {
+                        player.playVideoAt(playlistLength - 1);
+                    } else {
+                        player.previousVideo();
+                    }
+
+                    setBarProgress();
+                    playState = true;
+                    btnPlay.src = playState ? "/cinna/UI/playerButtons/stop.png" : "/cinna/UI/playerButtons/play.png";
+                };
+
+
+                btnNext.onclick = () => {
+                    if (player.getPlaylistIndex() == playlistLength - 1) {
+                        player.playVideoAt(0);
+                        enviarNotificacion(player.getVideoData().title);
+                    } else {
+                        player.nextVideo();
+                        enviarNotificacion(player.getVideoData().title);
+                    }
+
+                    setBarProgress();
+                    playState = true;
+                    btnPlay.src = playState ? "/cinna/UI/playerButtons/stop.png" : "/cinna/UI/playerButtons/play.png";
+                };
+
+                volumeValue = 50;
+
+                volControl2.addEventListener("input", (e) => {
+                    const vol = e.target.value;
+                    volumeValue = vol;
+                    volControl.value = vol;
+                    player.setVolume(vol);
+                });
+
+                volControl.addEventListener("input", (e) => {
+                    const vol = e.target.value;
+                    volumeValue = vol;
+                    volControl2.value = vol;
+                    player.setVolume(vol);
+                });
+
+                volButton = document.getElementById("volIcon");
+                volButton.onclick = () => {
+                    if (volControl.value > 0) {
+                        volButton2.src = "/cinna/UI/playerButtons/silencedIcon.png";
+                        volButton.src = "/cinna/UI/playerButtons/volumeIcon.png";
+                        player.setVolume(0);
+                        volControl.value = 0;
+                        volControl2.value = 0;
+                    } else {
+                        volButton2.src = "/cinna/UI/playerButtons/volumeIcon.png";
+                        volButton.src = "/cinna/UI/playerButtons/volumeIcon.png";
+                        player.setVolume(volumeValue);
+                        volControl.value = volumeValue;
+                        volControl2.value = volumeValue;
+                    }
+                }
+
+                volButton2 = document.getElementById("volIcon2");
+                volButton2.onclick = () => {
+                    if (volControl.value > 0) {
+                        volButton2.src = "/cinna/UI/playerButtons/silencedIcon.png";
+                        volButton.src = "/cinna/UI/playerButtons/silencedIcon.png";
+                        player.setVolume(0);
+                        volControl.value = 0;
+                        volControl2.value = 0;
+                    } else {
+                        volButton2.src = "/cinna/UI/playerButtons/volumeIcon.png";
+                        volButton.src = "/cinna/UI/playerButtons/volumeIcon.png";
+                        player.setVolume(volumeValue);
+                        volControl.value = volumeValue;
+                        volControl2.value = volumeValue;
+                    }
+                }
+
+
+            };
+
+
+
+        });
+    </script>
+
+
+
+</body>
+
+
+<!-- <script src="js/libs/jquery.js"></script> -->
+
+
+</html>
